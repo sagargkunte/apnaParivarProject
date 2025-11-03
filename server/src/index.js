@@ -14,7 +14,7 @@ import { configurePassport } from './modules/auth/passport.js';
 import authRouter from './routes/auth.routes.js';
 import familyRouter from './routes/family.routes.js';
 import memberRouter from './routes/member.routes.js';
-// import paymentRouter from './routes/payment.routes.js';
+import paymentRouter from './routes/payment.routes.js';
 import userRouter from './routes/user.routes.js';
 
 const PORT = process.env.PORT || 8000;
@@ -73,7 +73,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/families', familyRouter);
 app.use('/api/members', memberRouter);
-// app.use('/api/payments', paymentRouter);
+app.use('/api/payments', paymentRouter);
 app.use('/api/users', userRouter);
 
 

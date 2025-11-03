@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
 
 export default function Subscription({ token, familyId }) {
   const [loading, setLoading] = useState(false);
@@ -9,17 +8,37 @@ export default function Subscription({ token, familyId }) {
     try {
       setLoading(true);
       setMessage('');
+      
+      // Fixed: Use API_BASE consistently and proper error handling
+      const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+      
       const res = await fetch(`${API_BASE}/payments/create-order`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ familyId, amountInr: 500 })
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          familyId: familyId || '', // Ensure familyId is provided
+          amountInr: 500 
+        })
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.error || `HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || 'Failed to create order');
-      alert('Order created. Integrate Razorpay Checkout widget here.');
+      
+      if (data.approveUrl) {
+        window.location.href = data.approveUrl;
+        return;
+      }
       setMessage('Order created: ' + data.orderId);
     } catch (e) {
-      setMessage(e.message);
+      setMessage(e.message || 'Payment failed. Please try again.');
+      console.error('Payment error:', e);
     } finally {
       setLoading(false);
     }
@@ -53,7 +72,7 @@ export default function Subscription({ token, familyId }) {
       </div>
 
       <button 
-        disabled={loading} 
+        disabled={loading || !familyId} 
         onClick={pay} 
         className="w-full px-6 py-3 rounded-xl bg-white text-emerald-600 font-semibold hover:bg-emerald-50 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
       >
@@ -70,9 +89,23 @@ export default function Subscription({ token, familyId }) {
         )}
       </button>
       
+      {!familyId && (
+        <div className="mt-4 p-3 bg-yellow-500/20 rounded-xl backdrop-blur-sm border border-yellow-300/30">
+          <div className="text-sm text-yellow-100 text-center">Family ID is required</div>
+        </div>
+      )}
+      
       {message && (
-        <div className="mt-4 p-3 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30">
-          <div className="text-sm text-emerald-100 text-center">{message}</div>
+        <div className={`mt-4 p-3 rounded-xl backdrop-blur-sm border ${
+          message.includes('error') || message.includes('failed') 
+            ? 'bg-red-500/20 border-red-300/30' 
+            : 'bg-white/20 border-white/30'
+        }`}>
+          <div className={`text-sm text-center ${
+            message.includes('error') || message.includes('failed')
+              ? 'text-red-100'
+              : 'text-emerald-100'
+          }`}>{message}</div>
         </div>
       )}
     </div>

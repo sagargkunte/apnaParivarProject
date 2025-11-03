@@ -4,6 +4,7 @@ import AuthCallback from './pages/AuthCallback.jsx';
 import Families from './pages/Families.jsx';
 import FamilyTree from './pages/FamilyTree.jsx';
 import AdminPanel from './pages/AdminPanel.jsx';
+import PaymentsReturn from './pages/PaymentsReturn.jsx';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
 
@@ -139,6 +140,7 @@ export default function App() {
           <Route path="/families" element={<Families token={token} />} />
           <Route path="/family/:familyId" element={<FamilyTree token={token} />} />
           <Route path="/family/:familyId/admin" element={<AdminPanel token={token} />} />
+          <Route path="/payments/return" element={<PaymentsReturn token={token} />} />
         </Routes>
       </main>
 
@@ -182,7 +184,7 @@ export default function App() {
           </div>
           
           <div className="border-t border-slate-200/60 mt-8 pt-8 text-center text-slate-500">
-            <p>&copy; 2024 ApnaParivar. Preserving family histories, one generation at a time.</p>
+            <p>&copy; 2025 ApnaParivar. Preserving family histories, one generation at a time.</p>
           </div>
         </div>
       </footer>
