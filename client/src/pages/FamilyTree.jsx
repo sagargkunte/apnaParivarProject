@@ -41,27 +41,107 @@ export default function FamilyTree({ token }) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2 items-center">
-        <Link to={`/family/${familyId}/admin`} className="px-3 py-2 rounded-md border text-sm">Admin</Link>
-        <input className="px-3 py-2 border rounded-md" placeholder="Search name/keyword" value={q} onChange={(e)=>setQ(e.target.value)} />
-        <button className="px-3 py-2 rounded-md bg-slate-900 text-white text-sm" onClick={search}>Search</button>
-        <button className="px-3 py-2 rounded-md border text-sm" onClick={load}>Reset</button>
+    <div className="max-w-7xl mx-auto space-y-6 p-6">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+            <span className="text-white text-xl">🌳</span>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Family Tree</h1>
+            <p className="text-slate-600">Explore your family connections</p>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-3 items-center">
+          <Link 
+            to={`/family/${familyId}/admin`} 
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-slate-600 to-slate-700 text-white text-sm font-semibold hover:from-slate-700 hover:to-slate-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+          >
+            <span>⚙️</span>
+            Admin Panel
+          </Link>
+        </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-3 h-[70vh]">
+
+      {/* Search Section */}
+      <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-end">
+          <div className="flex-1 space-y-2">
+            <label className="text-sm font-medium text-slate-700">Search Family Members</label>
+            <input 
+              className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+              placeholder="Search by name or keyword..."
+              value={q} 
+              onChange={(e)=>setQ(e.target.value)} 
+            />
+          </div>
+          <div className="flex gap-3">
+            <button 
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+              onClick={search}
+            >
+              <span>🔍</span>
+              Search
+            </button>
+            <button 
+              className="px-6 py-3 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2"
+              onClick={load}
+            >
+              <span>🔄</span>
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Family Tree Visualization */}
+        <div className="lg:col-span-3 h-[70vh] bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden">
           <ReactFlow nodes={nodes} edges={edges} fitView>
-            <MiniMap />
-            <Controls />
-            <Background />
+            <MiniMap 
+              style={{ backgroundColor: '#f8fafc' }}
+              nodeColor="#3b82f6"
+              maskColor="rgba(59, 130, 246, 0.1)"
+            />
+            <Controls 
+              style={{ display: 'flex', gap: '4px' }}
+            />
+            <Background 
+              color="#94a3b8"
+              gap={20}
+              size={1}
+              variant="dots"
+            />
           </ReactFlow>
         </div>
-        <div className="lg:col-span-1 space-y-4">
+
+        {/* Sidebar */}
+        <div className="lg:col-span-1 space-y-6">
           <Subscription token={token} familyId={familyId} />
+          
+          {/* Stats Card */}
+          <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+            <h3 className="font-semibold text-lg mb-4">Family Overview</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-blue-100">Total Members</span>
+                <span className="font-bold text-xl">{members.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-blue-100">Generations</span>
+                <span className="font-bold text-xl">-</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-blue-100">Last Updated</span>
+                <span className="font-bold text-xl">Now</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-
