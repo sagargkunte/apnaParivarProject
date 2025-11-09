@@ -5,6 +5,8 @@ import Families from './pages/Families.jsx';
 import FamilyTree from './pages/FamilyTree.jsx';
 import AdminPanel from './pages/AdminPanel.jsx';
 import PaymentsReturn from './pages/PaymentsReturn.jsx';
+import CreateFamily from './pages/CreateFamily.jsx';
+import Members from './pages/Members.jsx';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
 
@@ -28,6 +30,15 @@ export default function App() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          if (data.user) {
+            const fres = await fetch(`${API_BASE}/families`, { headers: { Authorization: `Bearer ${token}` } });
+            if (fres.ok) {
+              const fdata = await fres.json();
+              if ((fdata.families || []).length === 0) {
+                navigate('/families/new', { replace: true });
+              }
+            }
+          }
         }
       } catch (error) {
         console.error('Failed to load user:', error);
@@ -138,8 +149,10 @@ export default function App() {
           <Route path="/" element={<Home user={user} />} />
           <Route path="/auth/callback" element={<AuthCallback onToken={(t)=>{ localStorage.setItem('token', t); setToken(t); }} />} />
           <Route path="/families" element={<Families token={token} />} />
+          <Route path="/families/new" element={<CreateFamily token={token} onCreated={()=>navigate('/families', { replace: true })} />} />
           <Route path="/family/:familyId" element={<FamilyTree token={token} />} />
           <Route path="/family/:familyId/admin" element={<AdminPanel token={token} />} />
+          <Route path="/family/:familyId/members" element={<Members token={token} />} />
           <Route path="/payments/return" element={<PaymentsReturn token={token} />} />
         </Routes>
       </main>

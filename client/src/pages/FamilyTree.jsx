@@ -62,6 +62,13 @@ export default function FamilyTree({ token }) {
             <span>⚙️</span>
             Admin Panel
           </Link>
+          <Link 
+            to={`/family/${familyId}/members`} 
+            className="px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold hover:bg-slate-50 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2"
+          >
+            <span>➕</span>
+            Manage Members
+          </Link>
         </div>
       </div>
 
